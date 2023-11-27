@@ -230,15 +230,15 @@ class Decoder(nn.Module):
         return x
 
 class Transformer(nn.Module):
-    def __init__(self, vocab_size, n_heads, n_layers, d_model, d_ff, pad_idx, max_len=5000, p_drop=0.1):
+    def __init__(self, vocab_size, n_heads, n_layers, d_model, d_ff, pad_tok, max_len=5000, p_drop=0.1):
         super(Transformer, self).__init__()
-        self.pad_idx = pad_idx
+        self.pad_tok = pad_tok
         self.encoder = Encoder(vocab_size, n_heads, n_layers, d_model, d_ff, max_len, p_drop)
         self.decoder = Decoder(vocab_size, n_heads, n_layers, d_model, d_ff, max_len, p_drop)
         self.output_projection = nn.Linear(d_model, vocab_size)
 
     def _create_pad_mask(self, x):
-        return (x != self.pad_idx).unsqueeze(-2)
+        return (x != self.pad_tok).unsqueeze(-2)
 
     def _create_subsequent_mask(self, x):
         seq_len = x.size(1)
